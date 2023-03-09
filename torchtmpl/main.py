@@ -23,11 +23,14 @@ def train(config):
     use_cuda = torch.cuda.is_available()
     device = torch.device("cuda") if use_cuda else torch.device("cpu")
 
-    if "wandb" in config:
-        wandb_config = config["wandb"]
+    if "wandb" in config["logging"]:
+        wandb_config = config["logging"]["wandb"]
         wandb.init(project=wandb_config["project"], entity=wandb_config["entity"])
         wandb_log = wandb.log
         wandb_log(config)
+        logging.info("Will be recording in wandb run name : {wandb.run.name}")
+    else:
+        wandb_log = None
 
     # Build the dataloaders
     logging.info("= Building the dataloaders")
@@ -90,6 +93,10 @@ def train(config):
         )
 
         # Update the dashboard
+        metrics = {"train_CE": train_loss, "test_CE": test_loss}
+        if wandb_log is not None:
+            print("Logging")
+            wandb_log(metrics)
 
 
 def test(config):
