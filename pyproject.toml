@@ -6,5 +6,6 @@ dependencies = [
     "PyYAML>=6.0",
     "torch>=1.13.1",
     "torchvision>=0.14.1",
-    "wandb>=0.13.11"
+    "wandb>=0.13.11",
+    "scipy>=1.10.1"
 ]

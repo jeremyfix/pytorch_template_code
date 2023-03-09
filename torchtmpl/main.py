@@ -3,17 +3,19 @@
 # Standard imports
 import logging
 import sys
+import os
+import pathlib
 
 # External imports
 import yaml
 import wandb
 import torch
-import torch.nn as nn
 
 # Local imports
 from . import data
 from . import models
 from . import optim
+from . import utils
 
 
 def train(config):
@@ -43,14 +45,35 @@ def train(config):
 
     # Build the loss
     logging.info("= Loss")
+    loss = optim.get_loss(config["loss"])
+
+    # Build the optimizer
+    logging.info("= Optimizer")
     optim_config = config["optim"]
-    loss = optim.get_loss(optim_config["loss"])
+    optimizer = optim.get_optimizer(optim_config, model.parameters())
 
     # Build the callbacks
+    logging_config = config["logging"]
+    # Let us use as base logname the class name of the modek
+    logname = model_config["class"]
+    logdir = utils.generate_unique_logpath(logging_config["logdir"], logname)
+    if not os.path.isdir(logdir):
+        os.makedirs(logdir)
+    logging.info(f"Will be logging into {logdir}")
 
-    for e in range(optim_config["nepochs"]):
+    # Copy the config file into the logdir
+    logdir = pathlib.Path(logdir)
+    with open(logdir / "config.yaml", "w") as file:
+        yaml.dump(config, file)
+
+    # Define the early stopping callback
+    model_checkpoint = utils.ModelCheckpoint(
+        model, str(logdir / "best_model.pt"), min_is_best=True
+    )
+
+    for e in range(config["nepochs"]):
         # Train 1 epoch
-
+        utils.train(model, train_loader, loss, optimizer, device)
         # Test
 
         # Update
