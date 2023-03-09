@@ -67,6 +67,6 @@ def get_dataloaders(data_config, use_cuda):
     )
 
     num_classes = len(base_dataset.categories)
-    input_size = list(base_dataset[0][0].shape)
+    input_size = tuple(base_dataset[0][0].shape)
 
     return train_loader, valid_loader, input_size, num_classes
