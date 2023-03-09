@@ -76,6 +76,18 @@ def train(config):
         train_loss = utils.train(model, train_loader, loss, optimizer, device)
 
         # Test
+        test_loss = utils.test(model, valid_loader, loss, device)
+
+        updated = model_checkpoint.update(test_loss)
+        logging.info(
+            "[%d/%d] Test loss : %.3f %s"
+            % (
+                e,
+                config["nepochs"],
+                test_loss,
+                "[>> BETTER <<]" if updated else "",
+            )
+        )
 
         # Update the dashboard
 
