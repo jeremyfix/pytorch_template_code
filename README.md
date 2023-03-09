@@ -20,13 +20,13 @@ For a local experimentation, you start by setting up the environment :
 ```
 python3 -m virtualenv venv
 source venv/bin/activate
-python -m pip install -r requirements.txt
+python -m pip install .
 ```
 
 Then you can run a training, by editing the yaml file, then 
 
 ```
-python main.py config.yml train
+python -m torchtmpl.main config.yml train
 ```
 
 And for testing
@@ -39,7 +39,27 @@ python main.py path/to/your/run test
 
 For running the code on a cluster, we provide an example script for starting an experimentation on a SLURM based cluster.
 
-The script we provide is dedicated to a use on our clusters and you may need to adapt it to your setting.
+The script we provide is dedicated to a use on our clusters and you may need to adapt it to your setting. 
+
+Then running the simulation can be as simple as :
+
+```
+python3 submit.py
+```
+
+## Testing the functions
+
+Every module/script is equiped with some test functions. Although these are not unitary tests per se, they nonetheless illustrate how to test the provided functions.
+
+For example, you can call :
 
 
+```
+python3 -m virtualenv venv
+source venv/bin/activate
+python -m pip install .
+python -m torchtmpl.models
+```
+
+and this will call the test functions in the `torchtmpl/models/__main__.py` script.
 
