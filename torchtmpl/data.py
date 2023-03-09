@@ -43,8 +43,8 @@ def get_dataloaders(data_config, use_cuda):
     indices = list(range(len(base_dataset)))
     random.shuffle(indices)
     num_valid = int(valid_ratio * len(base_dataset))
-    train_indices = indices[:num_valid]
-    valid_indices = indices[num_valid:]
+    train_indices = indices[num_valid:]
+    valid_indices = indices[:num_valid]
 
     train_dataset = torch.utils.data.Subset(base_dataset, train_indices)
     valid_dataset = torch.utils.data.Subset(base_dataset, valid_indices)
