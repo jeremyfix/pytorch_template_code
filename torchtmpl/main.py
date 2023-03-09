@@ -73,11 +73,11 @@ def train(config):
 
     for e in range(config["nepochs"]):
         # Train 1 epoch
-        utils.train(model, train_loader, loss, optimizer, device)
+        train_loss = utils.train(model, train_loader, loss, optimizer, device)
+
         # Test
 
-        # Update
-        pass
+        # Update the dashboard
 
 
 def test(config):

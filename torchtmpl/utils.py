@@ -6,6 +6,7 @@ import os
 # External imports
 import torch
 import torch.nn
+import tqdm
 
 
 def generate_unique_logpath(logdir, raw_run_name):
@@ -60,13 +61,7 @@ class ModelCheckpoint(object):
         return False
 
 
-def train(
-    model,
-    loader,
-    f_loss,
-    optimizer,
-    device,
-):
+def train(model, loader, f_loss, optimizer, device, dynamic_display=True):
     """
     Train a model for one epoch, iterating over the loader
     using the f_loss to compute the loss and the optimizer
@@ -85,7 +80,9 @@ def train(
     model.train()
     # Get the total number of minibatches, i.e. of sub epochs
 
-    for i, (inputs, targets) in enumerate(loader):
+    total_loss = 0
+    num_samples = 0
+    for i, (inputs, targets) in (pbar := tqdm.tqdm(enumerate(loader))):
 
         inputs, targets = inputs.to(device), targets.to(device)
 
@@ -97,5 +94,12 @@ def train(
         # Backward and optimize
         optimizer.zero_grad()
         loss.backward()
-
         optimizer.step()
+
+        # Update the metrics
+        # We here consider the loss is batch normalized
+        total_loss += inputs.shape[0] * loss.item()
+        num_samples += inputs.shape[0]
+        pbar.set_description(f"Train loss : {total_loss/num_samples:.2f}")
+
+    return total_loss / num_samples
