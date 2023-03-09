@@ -29,13 +29,13 @@ Then you can run a training, by editing the yaml file, then
 python -m torchtmpl.main config.yml train
 ```
 
-And for testing
+And for testing (**not yet implemented**)
 
 ```
 python main.py path/to/your/run test
 ```
 
-### Cluster experimentation
+### Cluster experimentation (**not yet implemented**)
 
 For running the code on a cluster, we provide an example script for starting an experimentation on a SLURM based cluster.
 
