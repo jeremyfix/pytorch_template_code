@@ -10,6 +10,7 @@ import pathlib
 import yaml
 import wandb
 import torch
+import torchinfo.torchinfo as torchinfo
 
 # Local imports
 from . import data
@@ -68,6 +69,29 @@ def train(config):
     logdir = pathlib.Path(logdir)
     with open(logdir / "config.yaml", "w") as file:
         yaml.dump(config, file)
+
+    # Make a summary script of the experiment
+    input_size = next(iter(train_loader))[0].shape
+    summary_text = (
+        f"Logdir : {logdir}\n"
+        + "## Command \n"
+        + " ".join(sys.argv)
+        + "\n\n"
+        + f" Config : {config} \n\n"
+        + (f" Wandb run name : {wandb.run.name}\n\n" if wandb_log is not None else "")
+        + "## Summary of the model architecture\n"
+        + f"{torchinfo.summary(model, input_size=input_size)}\n\n"
+        + "## Loss\n\n"
+        + f"{loss}\n\n"
+        + "## Datasets : \n"
+        + f"Train : {train_loader.dataset.dataset}\n"
+        + f"Validation : {valid_loader.dataset.dataset}"
+    )
+    with open(logdir / "summary.txt", "w") as f:
+        f.write(summary_text)
+    logging.info(summary_text)
+    if wandb_log is not None:
+        wandb.log({"summary": summary_text})
 
     # Define the early stopping callback
     model_checkpoint = utils.ModelCheckpoint(
