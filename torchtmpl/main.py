@@ -119,7 +119,7 @@ def train(config):
         # Update the dashboard
         metrics = {"train_CE": train_loss, "test_CE": test_loss}
         if wandb_log is not None:
-            print("Logging")
+            logging.info("Logging on wandb")
             wandb_log(metrics)
 
 
