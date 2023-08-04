@@ -13,5 +13,5 @@ dependencies = [
     "matplotlib>=3.7.1"
 ]
 
-[tool.setuptools]
-packages = ["torchtmpl"]
+[options]
+package_dir = "torchtmpl"
