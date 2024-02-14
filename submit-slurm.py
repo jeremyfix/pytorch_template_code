@@ -35,8 +35,7 @@ git checkout {commit_id}
 
 
 echo "Setting up the virtual environment"
-python3 -m pip install virtualenv --user
-virtualenv -p python3 venv
+python3 -m venv venv
 source venv/bin/activate
 
 # Install the library
